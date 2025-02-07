@@ -1,0 +1,29 @@
+[
+  {
+    "id": 2,
+    "username": "b",
+    "bookId": "5",
+    "bookTitle": "Moby-Dick",
+    "issueDate": "2025-02-01",
+    "returnDate": "2025-02-02",
+    "status": "Returned"
+  },
+  {
+    "id": 2,
+    "username": "p",
+    "bookId": "3",
+    "bookTitle": "1984",
+    "issueDate": "2025-02-01",
+    "returnDate": "2025-02-06",
+    "status": "Returned"
+  },
+  {
+    "id": 3,
+    "username": "b",
+    "bookId": "2",
+    "bookTitle": "To Kill a Mockingbird",
+    "issueDate": "2025-01-02",
+    "returnDate": "2025-01-25",
+    "status": "Issued"
+  }
+]

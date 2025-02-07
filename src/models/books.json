@@ -1,0 +1,44 @@
+[
+  {
+    "id": 1,
+    "title": "The Great Gatsby",
+    "author": "F. Scott Fitzgerald",
+    "category": "Fiction",
+    "status": "Available"
+  },
+  {
+    "id": 2,
+    "title": "To Kill a Mockingbird",
+    "author": "Harper Lee",
+    "category": "Fiction",
+    "status": "Issued"
+  },
+  {
+    "id": 3,
+    "title": "1984",
+    "author": "George Orwell",
+    "category": "Dystopian",
+    "status": "Available"
+  },
+  {
+    "id": 4,
+    "title": "The Catcher in the Rye",
+    "author": "J.D. Salinger",
+    "category": "Fiction",
+    "status": "Available"
+  },
+  {
+    "id": 5,
+    "title": "Moby-Dick",
+    "author": "Herman Melville",
+    "category": "Classic",
+    "status": "Available"
+  },
+  {
+    "id": 6,
+    "title": " The Jungle Book Book",
+    "author": "Rudyard Kipling",
+    "category": "Fiction",
+    "status": "Available"
+  }
+]

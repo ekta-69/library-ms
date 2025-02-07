@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Pay Fine</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+  </head>
+  <body
+    class="flex flex-col items-center justify-center min-h-screen bg-gray-100 p-6"
+  >
+    <h2 class="text-3xl font-bold">Pay Fine</h2>
+    <div class="w-full max-w-lg bg-white p-6 rounded-lg shadow-lg mt-4">
+      <label class="block font-semibold">Outstanding Fine:</label>
+      <p
+        id="fine-amount"
+        class="mt-2 p-2 w-full border rounded bg-gray-100 text-center"
+      >
+        Calculating...
+      </p>
+      <button
+        onclick="payFine()"
+        class="mt-4 bg-green-500 text-white px-6 py-3 rounded w-full font-semibold"
+      >
+        Pay Fine
+      </button>
+    </div>
+    <script>
+      function fetchFineAmount() {
+        const username = sessionStorage.getItem("username");
+        if (!username) {
+          console.error("Error: No username found in sessionStorage");
+          return;
+        }
+        fetch(`/api/fines/${username}`)
+          .then((response) => response.json())
+          .then((data) => {
+            const fineAmount = document.getElementById("fine-amount");
+            if (!fineAmount) {
+              console.error("Error: fine-amount element not found");
+              return;
+            }
+            fineAmount.textContent = `$${data.fine} USD`;
+          })
+          .catch((error) =>
+            console.error("Error fetching fine amount:", error)
+          );
+      }
+
+      function payFine() {
+        const username = sessionStorage.getItem("username");
+
+        if (!username) {
+          alert("Error: Missing required data");
+          return;
+        }
+
+        fetch("/api/fines/pay", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ username }),
+        })
+          .then((response) => response.json())
+          .then((data) => {
+            alert(data.message);
+            fetchFineAmount(); // Refresh fine amount after payment
+          })
+          .catch((error) => console.error("Error paying fine:", error));
+      }
+
+      // Ensure fine amount is fetched when the page loads
+      document.addEventListener("DOMContentLoaded", fetchFineAmount);
+    </script>
+  </body>
+</html>

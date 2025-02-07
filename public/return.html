@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Return Book</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+  </head>
+  <body
+    class="flex flex-col items-center justify-center min-h-screen bg-gray-100 p-6"
+  >
+    <h2 class="text-3xl font-bold">Return a Book</h2>
+    <div class="w-full max-w-lg bg-white p-6 rounded-lg shadow-lg mt-4">
+      <label class="block font-semibold">Select Book to Return:</label>
+      <select id="book-name" class="mt-2 p-2 w-full border rounded"></select>
+      <button
+        onclick="returnBook()"
+        class="mt-4 bg-blue-500 text-white px-6 py-3 rounded w-full font-semibold"
+      >
+        Return Book
+      </button>
+    </div>
+    <script>
+      function fetchUserIssuedBooks() {
+        const username = sessionStorage.getItem("username");
+        if (!username) {
+          console.error("Error: No username found in sessionStorage");
+          return;
+        }
+        fetch(`/api/transactions/user/${username}`)
+          .then((response) => response.json())
+          .then((data) => {
+            const bookSelect = document.getElementById("book-name");
+            if (!bookSelect) {
+              console.error("Error: book-name element not found");
+              return;
+            }
+            bookSelect.innerHTML = "";
+            if (data.length === 0) {
+              bookSelect.innerHTML =
+                "<option disabled>No issued books found</option>";
+              return;
+            }
+            data.forEach((transaction) => {
+              const option = document.createElement("option");
+              option.value = transaction.bookId;
+              option.textContent = `${transaction.bookTitle} (Issued: ${transaction.issueDate}, Due: ${transaction.returnDate})`;
+              bookSelect.appendChild(option);
+            });
+          })
+          .catch((error) =>
+            console.error("Error fetching issued books:", error)
+          );
+      }
+
+      function returnBook() {
+        const bookId = document.getElementById("book-name").value;
+        const username = sessionStorage.getItem("username");
+
+        if (!bookId || !username) {
+          alert("Error: Missing required data");
+          return;
+        }
+
+        fetch("/api/transactions/return", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ username, bookId }),
+        })
+          .then((response) => response.json())
+          .then((data) => {
+            alert(data.message);
+            fetchUserIssuedBooks(); // Refresh the book list after returning
+          })
+          .catch((error) => console.error("Error returning book:", error));
+      }
+
+      // Ensure user's issued books are fetched when the return page loads
+      document.addEventListener("DOMContentLoaded", fetchUserIssuedBooks);
+    </script>
+  </body>
+</html>

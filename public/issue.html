@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Issue Book</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+  </head>
+  <body
+    class="flex flex-col items-center justify-center min-h-screen bg-gray-100 p-6"
+  >
+    <h2 class="text-3xl font-bold">Issue a Book</h2>
+    <div class="w-full max-w-lg bg-white p-6 rounded-lg shadow-lg mt-4">
+      <label class="block font-semibold">Select Book:</label>
+      <select id="book-name" class="mt-2 p-2 w-full border rounded"></select>
+      <label class="block mt-4 font-semibold">Issue Date:</label>
+      <input
+        id="issue-date"
+        type="date"
+        class="mt-2 p-2 w-full border rounded"
+      />
+      <label class="block mt-4 font-semibold">Return Date:</label>
+      <input
+        id="return-date"
+        type="date"
+        class="mt-2 p-2 w-full border rounded"
+      />
+      <button
+        onclick="issueBook()"
+        class="mt-4 bg-blue-500 text-white px-6 py-3 rounded w-full font-semibold"
+      >
+        Issue Book
+      </button>
+    </div>
+    <script>
+      function fetchAvailableBooks() {
+        fetch("/api/books")
+          .then((response) => response.json())
+          .then((data) => {
+            const bookSelect = document.getElementById("book-name");
+            if (!bookSelect) {
+              console.error("Error: book-name element not found");
+              return;
+            }
+            bookSelect.innerHTML = "";
+            if (data.length === 0) {
+              bookSelect.innerHTML =
+                "<option disabled>No books available</option>";
+              return;
+            }
+            data.forEach((book) => {
+              const option = document.createElement("option");
+              option.value = book.id;
+              option.textContent = `${book.title} by ${book.author}`;
+              option.style.color = book.status === "Issued" ? "red" : "green";
+              bookSelect.appendChild(option);
+            });
+          })
+          .catch((error) =>
+            console.error("Error fetching available books:", error)
+          );
+      }
+
+      function issueBook() {
+        const bookId = document.getElementById("book-name").value;
+        const issueDate = document.getElementById("issue-date").value;
+        const returnDate = document.getElementById("return-date").value;
+        const username = sessionStorage.getItem("username");
+
+        if (!bookId || !issueDate || !returnDate || !username) {
+          alert("Error: Missing required data");
+          return;
+        }
+
+        fetch("/api/transactions/issue", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ username, bookId, issueDate, returnDate }),
+        })
+          .then((response) => response.json())
+          .then((data) => {
+            alert(data.message);
+            fetchAvailableBooks(); // Refresh book list after issuing
+          })
+          .catch((error) => console.error("Error issuing book:", error));
+      }
+
+      // Ensure available books are fetched when the issue page loads
+      document.addEventListener("DOMContentLoaded", fetchAvailableBooks);
+    </script>
+  </body>
+</html>

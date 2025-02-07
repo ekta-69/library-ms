@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Dashboard</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+  </head>
+  <body class="bg-gray-100 min-h-screen flex flex-col items-center p-6">
+    <h2 id="dashboard-title" class="text-3xl font-bold mb-4"></h2>
+
+    <div
+      id="admin-section"
+      class="hidden w-full max-w-4xl bg-white p-6 shadow rounded-lg"
+    >
+      <h3 class="text-2xl font-semibold mb-4">Admin Panel</h3>
+      <div class="grid grid-cols-2 gap-4">
+        <a
+          href="users.html"
+          class="bg-blue-500 text-white px-4 py-2 rounded text-center"
+          >Manage Users</a
+        >
+        <a
+          href="reports.html"
+          class="bg-blue-500 text-white px-4 py-2 rounded text-center"
+          >Generate Reports</a
+        >
+        <a
+          href="books.html"
+          class="bg-blue-500 text-white px-4 py-2 rounded text-center"
+          >Manage Books</a
+        >
+        <a
+          href="transactions.html"
+          class="bg-blue-500 text-white px-4 py-2 rounded text-center"
+          >View Transactions</a
+        >
+      </div>
+    </div>
+
+    <div
+      id="user-section"
+      class="hidden w-full max-w-4xl bg-white p-6 shadow rounded-lg mt-6"
+    >
+      <h3 class="text-2xl font-semibold mb-4">User Panel</h3>
+      <div class="grid grid-cols-2 gap-4">
+        <a
+          href="books.html"
+          class="bg-green-500 text-white px-4 py-2 rounded text-center"
+          >Browse Books</a
+        >
+        <a
+          href="issue.html"
+          class="bg-green-500 text-white px-4 py-2 rounded text-center"
+          >Issue a Book</a
+        >
+        <a
+          href="return.html"
+          class="bg-green-500 text-white px-4 py-2 rounded text-center"
+          >Return a Book</a
+        >
+        <a
+          href="fines.html"
+          class="bg-green-500 text-white px-4 py-2 rounded text-center"
+          >Pay Fines</a
+        >
+      </div>
+    </div>
+
+    <button
+      onclick="logout()"
+      class="mt-6 bg-red-500 text-white px-6 py-3 rounded"
+    >
+      Logout
+    </button>
+
+    <script>
+      document.addEventListener("DOMContentLoaded", () => {
+        const role = sessionStorage.getItem("role");
+        const username = sessionStorage.getItem("username");
+
+        if (!role) {
+          window.location.href = "login.html";
+          return;
+        }
+
+        document.getElementById("dashboard-title").textContent = `${
+          role.charAt(0).toUpperCase() + role.slice(1)
+        } Dashboard - Welcome, ${username}`;
+
+        if (role === "admin") {
+          document.getElementById("admin-section").classList.remove("hidden");
+        } else {
+          document.getElementById("user-section").classList.remove("hidden");
+        }
+      });
+
+      function logout() {
+        sessionStorage.clear();
+        window.location.href = "index.html";
+      }
+    </script>
+  </body>
+</html>
